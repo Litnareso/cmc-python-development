@@ -5,13 +5,31 @@ import random
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
+
+        self.boardSize = 4
+        self.nums = list(range(1, self.boardSize ** 2))
+        self.tiles = list()
+
         self.frameMenu = tk.Frame(self.master)
         self.frameBoard = tk.Frame(self.master)
-        self.nums = list(range(1, 16))
-        self.tiles = list()
-        self.grid()
-        self.createMenubar(self.frameMenu)
+        self.menuFont = ("Calibri", 20, "italic")
+        self.boardFont = ("Calibri", 20)
+
+        self.master.columnconfigure(0, weight=1)
+        self.master.rowconfigure(0, weight=1)
+
+        self.frameMenu.pack(fill=tk.X, side=tk.TOP)
+        self.frameBoard.pack(fill=tk.BOTH, expand=1)
+
+        self.frameMenu.columnconfigure(0, weight=1)
+        self.frameMenu.columnconfigure(1, weight=1)
+
+        for i in range(self.boardSize):
+            self.frameBoard.columnconfigure(i, weight=1)
+            self.frameBoard.rowconfigure(i, weight=1)
+
         self.createBoard(self.frameBoard)
+        self.createMenubar(self.frameMenu)
 
     def new(self):
         pass
@@ -20,20 +38,23 @@ class Application(tk.Frame):
         pass
 
     def createMenubar(self, parent):
-        parent.grid()
-        self.newButton = tk.Button(parent, text='New', command=self.new)
-        self.quitButton = tk.Button(parent, text='Quit', command=self.quit)
-        self.newButton.grid()
+        self.newButton = tk.Button(parent, text='New', command=self.new,
+                                   font=self.menuFont)
+        self.quitButton = tk.Button(parent, text='Quit', command=self.quit,
+                                    font=self.menuFont)
+        self.newButton.grid(row=0, column=0)
         self.quitButton.grid(row=0, column=1)
 
     def createBoard(self, parent):
+        self.nums = list(range(1, self.boardSize ** 2))
         random.shuffle(self.nums)
         self.tiles.clear()
-        parent.grid()
         for i in range(len(self.nums)):
             self.tiles.append(tk.Button(parent, text=str(self.nums[i]),
-                                        command=self.moveTile))
-            self.tiles[i].grid(row=i // 4, column=i % 4)
+                                        command=self.moveTile,
+                                        font=self.boardFont))
+            self.tiles[i].grid(row=i // self.boardSize,
+                               column=i % self.boardSize, sticky="NSWE")
 
 
 def main():
