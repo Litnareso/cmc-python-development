@@ -8,6 +8,7 @@ class Application(tk.Frame):
 
         self.boardSize = 4
         self.nums = list(range(1, self.boardSize ** 2 + 1))
+        self.idxHidden = self.boardSize ** 2 - 1
         self.tiles = list()
 
         self.frameMenu = tk.Frame(self.master)
@@ -34,8 +35,22 @@ class Application(tk.Frame):
     def new(self):
         self.createBoard(self.frameBoard)
 
-    def moveTile(self):
-        pass
+    def showTile(self, idx):
+        self.tiles[idx].grid(row=idx // self.boardSize,
+                             column=idx % self.boardSize, sticky="NSWE")
+
+    def swap(self, idx1, idx2):
+        self.nums[idx1], self.nums[idx2] = self.nums[idx2], self.nums[idx1]
+        self.tiles[idx1]['text'] = self.nums[idx1]
+        self.tiles[idx2]['text'] = self.nums[idx2]
+
+    def moveTile(self, idx):
+        dist = abs(idx - self.idxHidden)
+        if dist == 1 or dist == 4:
+            self.swap(idx, self.idxHidden)
+            self.showTile(self.idxHidden)
+            self.tiles[idx].grid_forget()
+            self.idxHidden = idx
 
     def createMenubar(self, parent):
         self.newButton = tk.Button(parent, text='New', command=self.new,
@@ -52,14 +67,16 @@ class Application(tk.Frame):
         if not self.tiles:
             for i in range(len(self.nums)):
                 self.tiles.append(tk.Button(parent, text=self.nums[i],
-                                            command=self.moveTile,
+                                            command=lambda idx=i:
+                                                self.moveTile(idx),
                                             font=self.boardFont))
-                self.tiles[i].grid(row=i // self.boardSize,
-                                   column=i % self.boardSize, sticky="NSWE")
-            self.tiles[-1].grid_forget()
+                self.showTile(i)
         else:
             for i in range(len(self.nums)):
                 self.tiles[i]['text'] = self.nums[i]
+            self.showTile(self.idxHidden)
+        self.idxHidden = self.boardSize ** 2 - 1
+        self.tiles[-1].grid_forget()
 
 
 def main():
