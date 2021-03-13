@@ -79,7 +79,7 @@ class Application(tk.Frame):
                 self.tiles.append(tk.Button(parent, text=self.nums[i],
                                             command=lambda idx=i:
                                                 self.moveTile(idx),
-                                            font=self.boardFont))
+                                            font=self.boardFont, width=3))
                 self.showTile(i)
         else:
             for i in range(len(self.nums)):
