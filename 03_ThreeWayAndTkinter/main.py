@@ -7,7 +7,7 @@ class Application(tk.Frame):
         super().__init__(master)
 
         self.boardSize = 4
-        self.nums = list(range(1, self.boardSize ** 2))
+        self.nums = list(range(1, self.boardSize ** 2 + 1))
         self.tiles = list()
 
         self.frameMenu = tk.Frame(self.master)
@@ -48,13 +48,18 @@ class Application(tk.Frame):
     def createBoard(self, parent):
         self.nums = list(range(1, self.boardSize ** 2))
         random.shuffle(self.nums)
-        self.tiles.clear()
-        for i in range(len(self.nums)):
-            self.tiles.append(tk.Button(parent, text=str(self.nums[i]),
-                                        command=self.moveTile,
-                                        font=self.boardFont))
-            self.tiles[i].grid(row=i // self.boardSize,
-                               column=i % self.boardSize, sticky="NSWE")
+        self.nums.append(self.boardSize ** 2)
+        if not self.tiles:
+            for i in range(len(self.nums)):
+                self.tiles.append(tk.Button(parent, text=self.nums[i],
+                                            command=self.moveTile,
+                                            font=self.boardFont))
+                self.tiles[i].grid(row=i // self.boardSize,
+                                   column=i % self.boardSize, sticky="NSWE")
+            self.tiles[-1].grid_forget()
+        else:
+            for i in range(len(self.nums)):
+                self.tiles[i]['text'] = self.nums[i]
 
 
 def main():
