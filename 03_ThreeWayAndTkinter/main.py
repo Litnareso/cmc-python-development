@@ -77,6 +77,19 @@ class Application(tk.Frame):
         tkm.showinfo("Win", "You win!")
         self.new()
 
+    def isSolvable(self):
+        empty = 0
+        self.nums.append(empty)
+        sum = 0
+        for i in range(len(self.nums)):
+            tileA = self.nums[i]
+            for j in range(i + 1, len(self.nums)):
+                tileB = self.nums[j]
+                if tileA != empty and tileB != empty and tileB < tileA:
+                    sum += 1
+        self.nums.remove(empty)
+        return (sum % 2 == 0) == (self.idxHidden // self.boardSize % 2 == 1)
+
     def createMenubar(self, parent):
         self.newButton = tk.Button(parent, text='New', command=self.new,
                                    font=self.menuFont,
@@ -95,7 +108,7 @@ class Application(tk.Frame):
 
     def createBoard(self, parent):
         self.nums = list(range(1, self.boardSize ** 2))
-        while self.nums == self.target[:-1]:
+        while self.nums == self.target[:-1] or not self.isSolvable():
             random.shuffle(self.nums)
         self.nums.append(self.boardSize ** 2)
         if not self.tiles:
