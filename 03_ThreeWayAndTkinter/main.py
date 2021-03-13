@@ -32,7 +32,7 @@ class Application(tk.Frame):
         self.createMenubar(self.frameMenu)
 
     def new(self):
-        pass
+        self.createBoard(self.frameBoard)
 
     def moveTile(self):
         pass
