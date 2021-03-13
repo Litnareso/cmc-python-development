@@ -13,16 +13,31 @@ class Application(tk.Frame):
         self.idxHidden = self.boardSize ** 2 - 1
         self.tiles = list()
 
+        self.menuPad = 4
+        self.boardPad = 1
+
+        self.menuColor = '#f1d18a'
+        self.menuColorActv = '#e2c275'
+        self.boardColor = '#f1d18a'
+        self.boardColorActv = '#e2c275'
+        self.backColor = '#eadca6'
+        self.textColor = '#222831'
+        self.textColorActv = '#222831'
+
         self.frameMenu = tk.Frame(self.master)
         self.frameBoard = tk.Frame(self.master)
         self.menuFont = ("Calibri", 20, "italic")
         self.boardFont = ("Calibri", 20)
 
+        self.master['background'] = self.backColor
+        self.frameMenu['background'] = self.backColor
+        self.frameBoard['background'] = self.backColor
+
         self.master.columnconfigure(0, weight=1)
         self.master.rowconfigure(0, weight=1)
 
-        self.frameMenu.pack(fill=tk.X, side=tk.TOP)
-        self.frameBoard.pack(fill=tk.BOTH, expand=1)
+        self.frameMenu.pack(fill=tk.X, side=tk.TOP, pady=self.menuPad)
+        self.frameBoard.pack(fill=tk.BOTH, expand=1, padx=self.boardPad)
 
         self.frameMenu.columnconfigure(0, weight=1)
         self.frameMenu.columnconfigure(1, weight=1)
@@ -39,7 +54,8 @@ class Application(tk.Frame):
 
     def showTile(self, idx):
         self.tiles[idx].grid(row=idx // self.boardSize,
-                             column=idx % self.boardSize, sticky="NSWE")
+                             column=idx % self.boardSize, sticky="NSWE",
+                             padx=self.boardPad, pady=self.boardPad)
 
     def swap(self, idx1, idx2):
         self.nums[idx1], self.nums[idx2] = self.nums[idx2], self.nums[idx1]
@@ -63,9 +79,17 @@ class Application(tk.Frame):
 
     def createMenubar(self, parent):
         self.newButton = tk.Button(parent, text='New', command=self.new,
-                                   font=self.menuFont)
+                                   font=self.menuFont,
+                                   background=self.menuColor,
+                                   activebackground=self.menuColorActv,
+                                   foreground=self.textColor,
+                                   activeforeground=self.textColorActv)
         self.quitButton = tk.Button(parent, text='Quit', command=self.quit,
-                                    font=self.menuFont)
+                                    font=self.menuFont,
+                                    background=self.menuColor,
+                                    activebackground=self.menuColorActv,
+                                    foreground=self.textColor,
+                                    activeforeground=self.textColorActv)
         self.newButton.grid(row=0, column=0)
         self.quitButton.grid(row=0, column=1)
 
@@ -76,10 +100,14 @@ class Application(tk.Frame):
         self.nums.append(self.boardSize ** 2)
         if not self.tiles:
             for i in range(len(self.nums)):
-                self.tiles.append(tk.Button(parent, text=self.nums[i],
-                                            command=lambda idx=i:
-                                                self.moveTile(idx),
-                                            font=self.boardFont, width=3))
+                tile = tk.Button(parent, text=self.nums[i],
+                                 command=lambda idx=i: self.moveTile(idx),
+                                 font=self.boardFont, width=3,
+                                 background=self.boardColor,
+                                 activebackground=self.boardColorActv,
+                                 foreground=self.textColor,
+                                 activeforeground=self.textColorActv)
+                self.tiles.append(tile)
                 self.showTile(i)
         else:
             for i in range(len(self.nums)):
