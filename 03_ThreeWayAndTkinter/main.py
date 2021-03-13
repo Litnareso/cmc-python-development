@@ -71,7 +71,8 @@ class Application(tk.Frame):
 
     def createBoard(self, parent):
         self.nums = list(range(1, self.boardSize ** 2))
-        random.shuffle(self.nums)
+        while self.nums == self.target[:-1]:
+            random.shuffle(self.nums)
         self.nums.append(self.boardSize ** 2)
         if not self.tiles:
             for i in range(len(self.nums)):
