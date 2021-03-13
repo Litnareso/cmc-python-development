@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as tkm
 import random
 
 
@@ -8,6 +9,7 @@ class Application(tk.Frame):
 
         self.boardSize = 4
         self.nums = list(range(1, self.boardSize ** 2 + 1))
+        self.target = list(range(1, self.boardSize ** 2 + 1))
         self.idxHidden = self.boardSize ** 2 - 1
         self.tiles = list()
 
@@ -51,6 +53,12 @@ class Application(tk.Frame):
             self.showTile(self.idxHidden)
             self.tiles[idx].grid_forget()
             self.idxHidden = idx
+            if self.nums == self.target:
+                self.win()
+
+    def win(self):
+        tkm.showinfo("Win", "You win!")
+        self.new()
 
     def createMenubar(self, parent):
         self.newButton = tk.Button(parent, text='New', command=self.new,
