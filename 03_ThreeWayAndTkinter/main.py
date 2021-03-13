@@ -48,7 +48,8 @@ class Application(tk.Frame):
 
     def moveTile(self, idx):
         dist = abs(idx - self.idxHidden)
-        if dist == 1 or dist == 4:
+        if (dist == self.boardSize or dist == 1 and
+                idx // self.boardSize == self.idxHidden // self.boardSize):
             self.swap(idx, self.idxHidden)
             self.showTile(self.idxHidden)
             self.tiles[idx].grid_forget()
