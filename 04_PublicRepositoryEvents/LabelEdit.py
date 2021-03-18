@@ -1,10 +1,16 @@
 import tkinter as tk
+import tkinter.font as tkFont
 
 
 class InputLabel(tk.Label):
     def __init__(self, master=None, *args, **kwargs):
-        super().__init__(master, takefocus=True, highlightthickness=1, *args,
-                         **kwargs)
+        super().__init__(master, takefocus=True, highlightthickness=1,
+                         anchor='w', *args, **kwargs)
+
+        self.fontConf = tkFont.Font(font=self['font'])
+        self.fontConf.configure(family='Courier')
+        self['font'] = self.fontConf
+
         self.cursor = tk.Frame(self, width=1)
         self.bind('<Button-1>', self.placeCursor)
 
@@ -13,7 +19,11 @@ class InputLabel(tk.Label):
         self.focus_set()
         self.cursor.configure(background=self['fg'],
                               height=self.winfo_height() - 3 * self.pad)
-        self.cursor.place(x=10, y=self.pad)
+        if len(self['text']):
+            self.wid = self.fontConf.measure(self['text']) / len(self['text'])
+        else:
+            self.wid = 2
+        self.cursor.place(x=round(self.wid), y=self.pad)
 
 
 class Application(tk.Frame):
