@@ -51,7 +51,7 @@ class InputLabel(tk.Label):
         if len(self['text']):
             self.wid = self.fontConf.measure(self['text']) / len(self['text'])
         else:
-            self.wid = 2
+            self.wid = self.fontConf.measure('a')
         self.coord = min(round((args[0].x - self.wid / 4) / self.wid),
                          len(self['text']))
         self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
@@ -81,7 +81,6 @@ class Application(tk.Frame):
     def createWidgets(self):
         self.font = ("Calibri", 20)
         self.str = tk.StringVar()
-        self.str.set('testtesttest')
         self.label = InputLabel(self, textvariable=self.str, font=self.font)
         self.quit = tk.Button(self, text='Quit', command=self.quit,
                               font=self.font)
