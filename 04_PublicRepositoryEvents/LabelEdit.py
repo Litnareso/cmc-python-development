@@ -3,9 +3,16 @@ import tkinter.font as tkFont
 
 
 class InputLabel(tk.Label):
-    def __init__(self, master=None, *args, **kwargs):
+    def __init__(self, master=None, text=None, textvariable=None,
+                 *args, **kwargs):
+        if textvariable is None:
+            textvariable = tk.StringVar()
+            textvariable.set(text)
         super().__init__(master, takefocus=True, highlightthickness=1,
-                         anchor='w', *args, **kwargs)
+                         anchor='w', textvariable=textvariable,
+                         *args, **kwargs)
+
+        self.textvariable = textvariable
 
         self.fontConf = tkFont.Font(font=self['font'])
         self.fontConf.configure(family='Courier')
@@ -13,6 +20,7 @@ class InputLabel(tk.Label):
 
         self.cursor = tk.Frame(self, width=1)
         self.bind('<Button-1>', self.placeCursor)
+        self.bind('<BackSpace>', self.removeChar)
 
     def placeCursor(self, *args, **kwargs):
         self.pad = self.winfo_height() // 10
@@ -26,6 +34,13 @@ class InputLabel(tk.Label):
         self.coord = min(round((args[0].x - self.wid / 4) / self.wid),
                          len(self['text']))
         self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
+
+    def removeChar(self, *args, **kwargs):
+        if len(self['text']) and self.coord > 0:
+            str = self['text']
+            self.textvariable.set(str[:self.coord - 1] + str[self.coord:])
+            self.coord -= 1
+            self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
 
 
 class Application(tk.Frame):
