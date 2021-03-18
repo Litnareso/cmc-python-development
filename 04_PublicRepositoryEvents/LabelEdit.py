@@ -38,7 +38,10 @@ class InputLabel(tk.Label):
         elif args[0].keysym == "Right":
             self.move(1)
         else:
-            pass
+            if len(args[0].keysym) == 1 and args[0].keysym.isprintable():
+                self.insert(args[0].keysym)
+            elif args[0].keysym == "space":
+                self.insert(" ")
 
     def placeCursor(self, *args, **kwargs):
         self.pad = self.winfo_height() // 10
@@ -51,6 +54,12 @@ class InputLabel(tk.Label):
             self.wid = 2
         self.coord = min(round((args[0].x - self.wid / 4) / self.wid),
                          len(self['text']))
+        self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
+
+    def insert(self, sym):
+        str = self['text']
+        self.textvariable.set(str[:self.coord] + sym + str[self.coord:])
+        self.coord += 1
         self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
 
     def removeChar(self):
