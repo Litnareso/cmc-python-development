@@ -85,7 +85,7 @@ class Application(tk.Frame):
         self.quit = tk.Button(self, text='Quit', command=self.quit,
                               font=self.font)
         self.label.grid(sticky="WE")
-        self.quit.grid()
+        self.quit.grid(sticky="E")
 
 
 def main():
