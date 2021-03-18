@@ -5,15 +5,15 @@ class InputLabel(tk.Label):
     def __init__(self, master=None, *args, **kwargs):
         super().__init__(master, takefocus=True, highlightthickness=1, *args,
                          **kwargs)
-        self.pad = 3
         self.cursor = tk.Frame(self, width=1)
         self.bind('<Button-1>', self.placeCursor)
 
     def placeCursor(self, *args, **kwargs):
+        self.pad = self.winfo_height() // 10
         self.focus_set()
         self.cursor.configure(background=self['fg'],
                               height=self.winfo_height() - 3 * self.pad)
-        self.cursor.place(x=10)
+        self.cursor.place(x=10, y=self.pad)
 
 
 class Application(tk.Frame):
