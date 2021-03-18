@@ -20,7 +20,25 @@ class InputLabel(tk.Label):
 
         self.cursor = tk.Frame(self, width=1)
         self.bind('<Button-1>', self.placeCursor)
-        self.bind('<BackSpace>', self.removeChar)
+        self.bind('<KeyPress>', self.handler)
+
+    def move(self, shift):
+        self.coord = min(len(self['text']), max(0, self.coord + shift))
+        self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
+
+    def handler(self, *args, **kwargs):
+        if args[0].keysym == "BackSpace":
+            self.removeChar()
+        elif args[0].keysym == "Up" or args[0].keysym == "End":
+            self.move(len(self['text']))
+        elif args[0].keysym == "Down" or args[0].keysym == "Home":
+            self.move(-len(self['text']))
+        elif args[0].keysym == "Left":
+            self.move(-1)
+        elif args[0].keysym == "Right":
+            self.move(1)
+        else:
+            pass
 
     def placeCursor(self, *args, **kwargs):
         self.pad = self.winfo_height() // 10
@@ -35,7 +53,7 @@ class InputLabel(tk.Label):
                          len(self['text']))
         self.cursor.place(x=round(self.wid * self.coord), y=self.pad)
 
-    def removeChar(self, *args, **kwargs):
+    def removeChar(self):
         if len(self['text']) and self.coord > 0:
             str = self['text']
             self.textvariable.set(str[:self.coord - 1] + str[self.coord:])
