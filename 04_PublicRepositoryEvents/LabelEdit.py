@@ -23,7 +23,8 @@ class InputLabel(tk.Label):
             self.wid = self.fontConf.measure(self['text']) / len(self['text'])
         else:
             self.wid = 2
-        self.cursor.place(x=round(self.wid), y=self.pad)
+        coord = round((args[0].x - self.wid / 4) / self.wid)
+        self.cursor.place(x=round(self.wid * coord), y=self.pad)
 
 
 class Application(tk.Frame):
