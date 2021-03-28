@@ -33,29 +33,44 @@ class Application(tk.Frame):
         self.canv.grid(sticky="NSWE")
         self.drawn = None
         self.start = None
+        self.rad = 2
         self.canv.bind('<ButtonPress-1>', self.onStart)
         self.canv.bind('<B1-Motion>', self.onGrow)
-        self.canv.bind('<ButtonPress-3>', self.onMove)
+        self.canv.bind('<Double-1>', self.onRaise)
 
     def onStart(self, event):
         self.start = event
         self.drawn = None
+        rad = self.rad
+        ids = self.canv.find_overlapping(event.x - rad, event.y - rad,
+                                         event.x + rad, event.y + rad)
+        if ids:
+            self.redrawn = ids[-1]
+            return
+        self.redrawn = None
 
     def onGrow(self, event):
+        if self.redrawn:
+            diffX, diffY = event.x - self.start.x, event.y - self.start.y
+            self.canv.move(self.redrawn, diffX, diffY)
+            self.canv.tag_raise(self.redrawn)
+            self.start = event
+            return
         if self.drawn:
             self.canv.delete(self.drawn)
-        id = self.canv.create_oval(self.start.x, self.start.y,
-                                   event.x, event.y, self.paintStyle)
-        self.drawn = id
+        self.drawn = self.canv.create_oval(self.start.x, self.start.y,
+                                           event.x, event.y,
+                                           self.paintStyle)
+
+    def onRaise(self, event):
+        rad = self.rad
+        ids = self.canv.find_overlapping(event.x - rad, event.y - rad,
+                                         event.x + rad, event.y + rad)
+        if ids:
+            self.canv.tag_raise(ids[-1])
 
     def onClear(self, event):
         self.canv.delete('all')
-
-    def onMove(self, event):
-        if self.drawn:
-            diffX, diffY = event.x - self.start.x, event.y - self.start.y
-            self.canv.move(self.drawn, diffX, diffY)
-            self.start = event
 
 
 def main():
