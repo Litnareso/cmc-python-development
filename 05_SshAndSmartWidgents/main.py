@@ -29,7 +29,7 @@ class Application(tk.Frame):
         self.descr.grid(sticky="NSWE")
 
     def createPaint(self, parent):
-        self.canv = tk.Canvas(parent)
+        self.canv = tk.Canvas(parent, takefocus=True)
         self.canv.grid(sticky="NSWE")
         self.drawn = None
         self.start = None
@@ -37,8 +37,10 @@ class Application(tk.Frame):
         self.canv.bind('<ButtonPress-1>', self.onStart)
         self.canv.bind('<B1-Motion>', self.onGrow)
         self.canv.bind('<Double-1>', self.onRaise)
+        self.canv.bind('<Control-Return>', self.updateText)
 
     def onStart(self, event):
+        self.canv.focus_set()
         self.start = event
         self.drawn = None
         rad = self.rad
@@ -63,6 +65,7 @@ class Application(tk.Frame):
                                            self.paintStyle)
 
     def onRaise(self, event):
+        self.canv.focus_set()
         rad = self.rad
         ids = self.canv.find_overlapping(event.x - rad, event.y - rad,
                                          event.x + rad, event.y + rad)
@@ -71,6 +74,18 @@ class Application(tk.Frame):
 
     def onClear(self, event):
         self.canv.delete('all')
+
+    def updateText(self, event):
+        self.descr.delete("1.0", "end")
+        for id in self.canv.find_all():
+            colorFill = self.canv.itemcget(id, "fill")
+            colorOutline = self.canv.itemcget(id, "outline")
+            outline = self.canv.itemcget(id, "offset").replace(",", ".")
+            coords = self.canv.coords(id)
+            self.descr.insert("end", "oval <" +
+                              "{:.1f} {:.1f} {:.1f} {:.1f}> ".format(*coords) +
+                              "{:.1f}".format(float(outline)) + " " +
+                              colorOutline + " " + colorFill + "\n")
 
 
 def main():
